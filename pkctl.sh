@@ -29,7 +29,6 @@ else
    platform='unknown'
 fi
 
-
 setUrl() {
     if [[ ! "$cmdline" =~ "--url=" ]]; then
         echo "You need to pass an url using the --url= option."
@@ -151,11 +150,11 @@ case "$1" in
   auto)
   setUrl
 
-  $0 clean
-  $0 init --url=$url
-  $0 purge
-  $0 build
-  $0 install
+  bash $0 clean
+  bash $0 init --url=$url
+  bash $0 purge
+  bash $0 build
+  bash $0 install
   ;;
   init)
     setUrl
@@ -200,7 +199,7 @@ case "$1" in
     rm -f work/*.keys
 
     echo "Setting executable bits"
-    chmod 755 "$work/*.sh"
+    chmod 755 "$work/*.sh" 2> /dev/null
 
     echo "Done. Please continue at $work"
     ;;
@@ -248,7 +247,7 @@ case "$1" in
 
     # Construct human and service keys if an account exists.
     for group in humans services; do
-        accounts=$(ls ../$group/*.keys | sed "s|.keys||g")
+        accounts=$(ls ../$group/*.keys 2> /dev/null | sed "s|../$group/||g" | sed "s|.keys||g")
         for account in $accounts; do
             if [ "$(getUser $account)" ]; then
                 echo "Adding key for $account to $account.keys"
@@ -262,7 +261,7 @@ case "$1" in
     echo ""
 
     # Construct service account keys.
-    for role in $(ls ../roles/*.role); do
+    for role in $(ls ../roles/*.role 2> /dev/null | sed "s|../roles/||g"); do
         systems="all"
         . ../roles/$role
         for system in $systems; do
@@ -282,7 +281,7 @@ case "$1" in
     echo ""
 
     # If a service account on a machine has an entry in specifics/, add to key file.
-    for entry in $(ls ../specifics/*.keys); do
+    for entry in $(ls ../specifics/*.keys 2> /dev/null); do
         account=$(echo "$entry" | cut -d '@' -f 1 | tr A-Z a-z)
         host=$(echo "$entry" | cut -d '@' -f 2 | cut -d '.' -f 1 | tr A-Z a-z)
         if [ $shortname = $host ]; then
