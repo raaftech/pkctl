@@ -234,7 +234,7 @@ case "$1" in
 
     # Construct human and service keys if an account exists.
     for group in humans services; do
-        accounts=$(ls ../$group | sed "s|.keys||g")
+        accounts=$(ls ../$group/*.keys | sed "s|.keys||g")
         for account in $accounts; do
             if [ "$(getUser $account)" ]; then
                 echo "Adding key for $account to $account.keys"
@@ -248,7 +248,7 @@ case "$1" in
     echo ""
 
     # Construct service account keys.
-    for role in $(ls ../roles); do
+    for role in $(ls ../roles/*.role); do
         systems="all"
         . ../roles/$role
         for system in $systems; do
@@ -268,7 +268,7 @@ case "$1" in
     echo ""
 
     # If a service account on a machine has an entry in specifics/, add to key file.
-    for entry in $(ls ../specifics); do
+    for entry in $(ls ../specifics/*.keys); do
         account=$(echo "$entry" | cut -d '@' -f 1 | tr A-Z a-z)
         host=$(echo "$entry" | cut -d '@' -f 2 | cut -d '.' -f 1 | tr A-Z a-z)
         if [ $shortname = $host ]; then
