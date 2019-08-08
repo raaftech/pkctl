@@ -173,7 +173,7 @@ case "$1" in
     curl="$(which curl 2> /dev/null)"
     if [ ! -z "$wget" ]; then
         echo "Fetching data using wget"
-        wget -q -r -nH --cut-dirs=1 --no-parent --reject "index.html*" $url
+        wget -q -r -nH --cut-dirs=1 --no-parent --reject "index.html*" --reject "*.gif" $url
     elif [ ! -z "$curl" ]; then
         echo "Fetching data using curl"
         curl -s -O $url/pkctl.sh
@@ -198,8 +198,8 @@ case "$1" in
     echo "Making sure work directory is clean"
     rm -f work/*.keys
 
-    echo "Setting executable bits"
-    chmod 755 "$work/*.sh" 2> /dev/null
+    echo "Setting executable bits on *.sh in $work"
+    chmod 755 "$work/"*.sh 2> /dev/null
 
     echo "Done. Please continue at $work"
     ;;
